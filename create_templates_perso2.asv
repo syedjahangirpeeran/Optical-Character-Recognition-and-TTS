@@ -1,0 +1,55 @@
+% CREATE TEMPLATES Machine Learning
+% CAUTION:
+% We must open an image with models in a specific order:
+% First the numbers '0 'to '9' and the letters MAJUSQULES from 'A' to 'Z'. And lowercase letters 'a' to 'z'
+% Dim templates must be equal to [42, 24 * 62] = [42, 1488]
+%%
+% Clear all
+clc, close all, clear all
+% Read image LOAD AN IMAGE
+%%%[filename, pathname] = uigetfile('*','LOAD AN Image');
+%Storage matrix character from image
+character=[];
+for j=1:1071
+    
+    for i=1:62
+        modele=imread(strcat('D:\DSAA_HW_and_Assigns\DsaaProject\dataset\Sample',num2str(i),'\',num2str(i-1),' (',num2str(j),').png'));
+        %%%modele=imread(fullfile(pathname, filename));
+        % Convert to gray scale
+        if size(modele,3)==3 %RGB image
+            modele=rgb2gray(modele);
+        end
+        % Convert to BW
+        threshold = graythresh(modele);
+        modele =~im2bw(modele,threshold);
+        % Remove all object containing fewer than 100 pixels
+        modele = bwareaopen(modele,100);%Change the value if the dimension of templates are bad
+        re=modele;
+        %Storage matrix interchar from the space between two characters 
+        interchar=[];
+        %Storage matrix from the width of a letter
+        largeur=[];
+        %%%while 1
+            %Fcn 'lines' separate lines in text
+        %%%[fl, re]=lines(re);
+        [f c]=find(re);
+        re2=re(min(f):max(f),min(c):max(c));%Crops image
+        %Uncomment line below to see lines one by one
+        %imshow(fl);pause(0.5)    
+        % Resize letter (size of template)
+        img_r=imresize(re2,[42 24]);
+        %-------------------------------------------------------------------
+        % character concatenation
+        %%%imshow(img_r)
+        character=[character img_r];
+    end
+       %%%save ('templates','templates')
+end
+x=[];
+for k=1:(62*1071)
+    x=[x 24];
+end
+templates=mat2cell(character,42,x);
+save('templates','templates');
+%clear all
+%clear all;
